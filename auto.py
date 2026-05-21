@@ -25,20 +25,27 @@ st.title("🚘 Auto Pro Manager")
 tab1, tab2, tab3 = st.tabs(["🗂 Мій Гараж", "🛒 Розумний пошук", "📖 Сервіс"])
 
 # 1. ГАРАЖ
+# --- ВКЛАДКА 1: ГАРАЖ ---
 with tab1:
     st.subheader("➕ Додати авто в парк")
     with st.form("add_car_form"):
         c1, c2 = st.columns(2)
         with c1:
-            brand = st.selectbox("Марка", ["Citroen", "Peugeot", "Fiat", "Audi", "Volkswagen", "BMW", "Інша"])
-            model = st.text_input("Модель")
+            # Тепер можна вписати ЛЮБУ марку вручну!
+            brand = st.text_input("Марка", placeholder="напр. Citroen, Tesla, MAN")
+            model = st.text_input("Модель", placeholder="напр. Jumper, Q7")
         with c2:
-            year = st.number_input("Рік", 1990, 2026, 2014)
-            vin = st.text_input("VIN-код")
+            year = st.number_input("Рік випуску", min_value=1900, max_value=2026, value=2014)
+            vin = st.text_input("VIN-код", placeholder="17 символів")
+            
         if st.form_submit_button("💾 Зберегти в Гараж"):
-            garage.append({"Марка": brand, "Модель": model, "VIN": vin, "Рік": year})
-            save_data(garage, "garage.json")
-            st.rerun()
+            if brand and model:
+                garage.append({"Марка": brand, "Модель": model, "VIN": vin, "Рік": year})
+                save_data(garage, "garage.json")
+                st.success(f"✅ {brand} {model} успішно додано!")
+                st.rerun()
+            else:
+                st.error("🚨 Впиши хоча б марку та модель!")
 
     for i, car in enumerate(garage):
         st.write(f"---")
